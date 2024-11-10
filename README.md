@@ -1,7 +1,8 @@
 # NavHat
 NavHat or Navigaion Hat is a Raspberry Pi HAT made for saling boats. The HAT implements a number of features to make the Raspberry Pi suitable for a sailing boat environment. It provides power to the Raspberry Pi from board supply, collects data from NMEA bus and attached sensors. It provides the hardware base for an Open Source Navigation platform.
+![Rendered NavHAT board](./documentation/images/NavHAT-angle.png)
 
-Features:
+**Features:**
 * Powered by board supply of 12-28V DC
 * Onboard fuses for Raspberry and power outputs
 * Four Power Outputs of up to 6A with current and temperature monitoring
