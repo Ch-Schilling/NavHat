@@ -13,6 +13,8 @@ To control other loads on the boat, there are four power outputs with current li
 ## Installation
 The HAT is connected to the Raspberry Pi computer with the 40 pin header. Start connecting battery power to J1. 16mm M2.5 spacer can be used to mechanically fix the boards.
 
+![Diagram and Connections](./images/NavHAT-diagram.png)
+
 ### Powering the system
 J1 is the large screw terminal providing power to the system and connecting loads conrolled by the high-side switches. Positive voltage from the battery is connected closest to the fuses.
 
