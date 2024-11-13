@@ -15,7 +15,7 @@ NavHat or Navigaion Hat is a Raspberry Pi HAT made for saling boats. The HAT imp
 * Designed for compatibility to Raspberry Pi HAT specification
 
 The board is designed using KiCad. 
-For more details, see the corresponding documentation.
+For more details, see the corresponding [documentation](./documentation/NavHAT.md).
 
 I hope you like the project as much as I do. In case of interest of the board itself, please contact me.
 
