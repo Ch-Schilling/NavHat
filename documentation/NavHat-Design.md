@@ -3,7 +3,7 @@ The design is made using KiCad. It is impressive how well that open source syste
 The board is designed for four copper layers to achieve the densitiy needed for the small footprint of the HAT as well as thermal and EMI reasons. For easyer manufacturing, components are populated on the top side only. KiCad and open hardware logos are printed on the bottom side of the board.
 
 ### Power Supply
-To operate a Raspberry Pi with Navigation HAT independent of other installation, two fuses are on board. F1 (approx. 3A) is installed in the path of the power supply for the Raspberry Pi, F2 (apporx. 20A) is in place for the four power outlets.
+To operate a Raspberry Pi with Navigation HAT independent of other installation, two fuses are on board. F1 (approx. 3A) is installed in the path of the power supply for the Raspberry Pi, F2 (approx. 20A) is in place for the four power outlets.
 The fuses are specified for 32V DC, therefore the supply voltage shall not exceed this value.
 To achieve high efficiency, low noise, low stand-by current and a wide voltage input the TI LM62460 was chosen. The part also offers a wide range switching frequency and a spread spectrum option. To optimize efficiency, the switching frequency is set to 488kHz. Higher frequencies would allow to use smaller inductors. An EMI filter is used at the battery side. Electrolythic capacitors are waived, purely ceramic capacitors are used. See schematics page 2 and the [datasheet](https://www.ti.com/product/de-de/LM62460) of the manufacturer.
 The Enable signal EN_POWER of the device is controlled by a flip-flop U4. EN_POWER is high and remains high if POWER_ON gets low by an external signal like a button, power-on cycle or an interrupt of the RTC. The flip-flop consumes very little power, it has to remain on by a low Iq linear regulator U2. In case of shutting down the Raspberry Pi, the gpio-poweroff driver is used to rise the clock signal of the flip-flop, disabling the DC/DC converter and put it into µA current consumption sleep mode. To do so, this needs to be added in the /boot/firmware/config.txt file:
@@ -18,9 +18,8 @@ To control lights, relays or board instruments 4 power outlets are available. Th
 A fraction of the output current can be fed throug a sense resistor to measure the output current. The voltage across the shunt resistor can be measured by the on-board ADC. Optionally, the first two switches can be controlled by the PWM engine of the Raspberry Pi. Please be aware that not all features of that mini computer can be used at the same time.
 > Warning: Do not drive PWM and the corresponding pin of the IO expander at the same time. One of these signals shall remain as an input.
 
-
 ### NMEA Interfaces
-The NMEA 2000, CAN interface is implemented using a Microchip MCP25625. The MCP25625 is a more modern and compact device containing a MCP2515 and corresponding driver. It creates a one chip solution from SPI to CAN bridge. From the Raspberry Pi's perspecive the MCP2515 driver is used. Make sure the /boot/firmware/config.txt contains the following:
+The NMEA 2000, CAN interface is implemented using a Microchip MCP25625. The MCP25625 is a more modern and compact device containing a MCP2515 and corresponding bus driver. It creates a one chip solution from SPI to CAN bridge. From the Raspberry Pi's perspecive the MCP2515 driver is used. Make sure the /boot/firmware/config.txt contains the following:
 ```
 dtparam=spi=on
 dtoverlay=mcp2515-can0,oscillator=20000000,interrupt=25,spimaxfrequency=2000000
@@ -44,8 +43,6 @@ For more details pyssel describes to setup NMEA 2000 with a CAN HAT on their [we
 For NMEA 0183 devices and/or other serial devices, a MAX14830 bridges SPI to quad UART. The first two UARTs are converted into RS-422 signals and fed to connector J9. The last two UARTs can be converted to RS-232 signals and fed to connector J10. One can use the TTL signals but one has to disable the converter chip U13 and put it into shutdown mode. The quad UART U12 could have its own quatz, since it has a wide possibility of options to create its clocks, the clockout of the CAN chip U9 shall be used instead.
 The CAN and RS-422 interfaces have an option of a termination resistor of typically 120Ohm, but these resistors are not populated by default. ESD protection diodes are used except for the RS-422 devices, they have large enough built-in protection.
 
-> Note: The quad UART is not commissioned yet!
-
 ### Sensors and Sensor Interfaces
 There are a wide variety of sensors with I2C interface. On board, the following parts share the user accessible I2C bus of the Raspberry Pi:
 * MCP23017 I/O Port extension for controlling the power outlets
@@ -58,7 +55,7 @@ The BMP390 is susceptible to stress. It is placed at the edge of the board in be
 There are two [STEMMA](https://learn.adafruit.com/introducing-adafruit-stemma-qt/what-is-stemma) connectors J3 and J4 as well as a STEMMA QT / Qwiic connector J5. The power pin of J5 is hooked up from linear regulator U2. It provides 3.3V even if the main DC/DC converter is switched off. This allows low power sensors to continue to operate without operation of the computer. The header J7 also carries the two I2C signals. There should be plenty of options to add I2C sensors to the system.
 Connector J2 is prepared for 1-wire devices inclusive 5kOhm pull-up and 3.3V and 5V to chose from.
 
-A nice option for environmental monitoring of temperature and humidity, the part HDC3020 can be used. It is not on board because the environment of the computer system is typically not representative for the environment to be monitored. The part continues to measure these parameters, even if there is no I2C communication. It stores the minimum and maximum measurements of temperature and rel. humidity. This is an excellent choise to connect to J5 to be powered, even whten the Raspberry Pi is off. The computer can read the min. and max. readings when it is awake again.
+A nice option for environmental monitoring of temperature and humidity, the part HDC3020 can be used. It is not on board because the environment of the computer system is typically not representative for the environment to be monitored. The part continues to measure these parameters, even if there is no I2C communication. It stores the minimum and maximum measurements of temperature and rel. humidity. This is an excellent choise to connect to J5 to be powered, even when the Raspberry Pi is off. The computer can read the min. and max. readings when it is awake again.
 
 ### Configuration
 #### EEPROM
